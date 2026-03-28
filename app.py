@@ -154,8 +154,8 @@ def process():
     ws = wb.active
 
     # 행높이/열너비 설정
-    ROW_HEIGHT = 55
-    ws.column_dimensions["G"].width = 8
+    ROW_HEIGHT = 45
+    ws.column_dimensions["G"].width = 7
 
     tmp_dir = tempfile.mkdtemp()
 
@@ -188,8 +188,8 @@ def process():
 
         xl_img = XLImage(img_path)
         # 행높이 55pt = 73px, 열너비 8 = 60px
-        xl_img.width = 60
-        xl_img.height = 60
+        xl_img.width = 50
+        xl_img.height = 50
         ws.add_image(xl_img, f"G{row_num}")
 
     output = BytesIO()
