@@ -103,9 +103,14 @@ def extract_model_code(raw_text):
     if not raw_text or str(raw_text).strip() == "nan":
         return None
     text = str(raw_text).strip()
+    # 괄호 안 내용 제거
     text = re.sub(r'\([^)]*\)', '', text)
-    text = re.split(r'[가-힣]', text)[0].strip()
-    return text if text else None
+    # 영어+숫자 조합만 추출
+    codes = re.findall(r'[A-Za-z0-9][A-Za-z0-9\-\._ ]*[A-Za-z0-9]|[A-Za-z0-9]', text)
+    if codes:
+        # 가장 긴 코드 반환
+        return max(codes, key=len).strip()
+    return None
 
 def search_image(model_code):
     url = "https://openapi.naver.com/v1/search/shop.json"
