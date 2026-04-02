@@ -59,6 +59,11 @@ HTML = '''
     </div>
 </div>
 <script>
+// 페이지 로드시 서버 자동 웜업
+window.addEventListener('load', function() {
+    fetch('/ping').catch(() => {});
+});
+
 document.getElementById('uploadForm').onsubmit = async function(e) {
     e.preventDefault();
     const file = document.getElementById('fileInput').files[0];
@@ -145,6 +150,10 @@ def download_image(img_url):
         return buf
     except:
         return None
+
+@app.route('/ping')
+def ping():
+    return 'pong'
 
 @app.route('/')
 def index():
