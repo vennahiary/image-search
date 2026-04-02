@@ -161,16 +161,18 @@ def index():
 
 @app.route('/process', methods=['POST'])
 def process():
+    import gc
     RED_FILL = PatternFill(start_color="FF9999", end_color="FF9999", fill_type="solid")
 
     file = request.files['file']
-    wb = openpyxl.load_workbook(file)
-    ws = wb.active
+    file_data = file.read()
+    wb = openpyxl.load_workbook(BytesIO(file_data))
+    del file_data
+    gc.collect()
 
-    # 행높이/열너비 설정
+    ws = wb.active
     ROW_HEIGHT = 45
     ws.column_dimensions["G"].width = 7
-
     tmp_dir = tempfile.mkdtemp()
 
     for row_num in range(3, ws.max_row + 1):
@@ -195,16 +197,18 @@ def process():
                 ws.cell(row=row_num, column=col).fill = RED_FILL
             continue
 
-        # 이미지 저장 후 삽입
         img_path = os.path.join(tmp_dir, f"{row_num}.jpg")
         with open(img_path, 'wb') as f:
             f.write(img_buf.read())
+        del img_buf
+        gc.collect()
 
         xl_img = XLImage(img_path)
-        # 행높이 55pt = 73px, 열너비 8 = 60px
         xl_img.width = 50
         xl_img.height = 50
         ws.add_image(xl_img, f"G{row_num}")
+        del xl_img
+        gc.collect()
 
     output = BytesIO()
     wb.save(output)
