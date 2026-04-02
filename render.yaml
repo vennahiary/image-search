@@ -3,7 +3,7 @@ services:
     name: image-search
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: gunicorn app:app --timeout 300 --workers 1
     envVars:
       - key: NAVER_CLIENT_ID
         sync: false
